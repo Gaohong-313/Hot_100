@@ -1,0 +1,48 @@
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        if(list1 == nullptr){
+            return list2;
+        }
+        if(list2 == nullptr){
+            return list1;
+        }
+        
+        vector<ListNode*> Listresult;
+        
+        // 使用临时指针遍历，保留 list1 和 list2 的头节点用于后续逻辑
+        ListNode* L = list1;
+        ListNode* R = list2;
+        
+        while(L != nullptr && R != nullptr){
+            if(L->val <= R->val){
+                Listresult.push_back(L);
+                L = L->next;
+            }
+            else{
+                Listresult.push_back(R);
+                R = R->next;
+            }
+        } 
+        
+        // 处理 L 剩余节点
+        while(L != nullptr){
+            Listresult.push_back(L);
+            L = L->next; // 更新指针
+        }
+        
+        // 处理 R 剩余节点
+        while(R != nullptr){
+            Listresult.push_back(R);
+            R = R->next; // 更新指针
+        }
+        
+        // 连接所有节点
+        for(int i = 0; i < Listresult.size() - 1; i++){
+            Listresult[i]->next = Listresult[i+1];
+        }
+        Listresult[Listresult.size()-1]->next = nullptr;
+        
+        return Listresult[0];
+    }
+};

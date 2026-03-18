@@ -1,0 +1,69 @@
+class Solution {
+public:
+    // 大数相加函数（保持不变）
+    string addStrings(string num1, string num2) {
+        string result = "";
+        int i = num1.length() - 1;
+        int j = num2.length() - 1;
+        int carry = 0;
+
+        while (i >= 0 || j >= 0 || carry > 0) {
+            int x = 0, y = 0, sum = 0;
+            if (i >= 0) {
+                x = num1[i] - '0';
+                i--;
+            }
+            if (j >= 0) {
+                y = num2[j] - '0';
+                j--;
+            }
+            sum = x + y + carry;
+            result.push_back('0' + (sum % 10));
+            carry = sum / 10;
+        }
+        reverse(result.begin(), result.end());
+        return result;
+    }
+
+    // 主函数
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        string s1;
+        string s2;
+        
+        // 遍历 l1
+        ListNode* m = l1;
+        while(m != nullptr){
+            s1 += to_string(m->val); // 将节点值转为字符并追加
+            m = m->next; // ⭐️ 必须移动指针，否则死循环
+        }
+        
+        // 遍历 l2
+        ListNode* n = l2;
+        while(n != nullptr){
+            s2 += to_string(n->val); // 将节点值转为字符并追加
+            n = n->next; // ⭐️ 必须移动指针，否则死循环
+        }
+        
+        // 反转字符串，使其从个位开始（符合加法运算逻辑）
+        reverse(s1.begin(), s1.end());
+        reverse(s2.begin(), s2.end());
+        
+        // 调用加法函数得到结果字符串
+        string result = addStrings(s1, s2);
+        
+        reverse(result.begin(), result.end());
+        
+        // 创建虚拟头节点，方便构建链表
+        ListNode* dummy = new ListNode(0);
+        ListNode* current = dummy;
+        
+        // 遍历结果字符串，将每个字符转换为数字并创建新节点
+        for(char c : result){
+            int digit = c - '0'; // 字符转数字
+            current->next = new ListNode(digit);
+            current = current->next;
+        }
+        
+        return dummy->next;
+    }
+};
