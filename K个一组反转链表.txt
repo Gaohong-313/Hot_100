@@ -1,0 +1,42 @@
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if(head == nullptr || k == 1) return head;
+
+        vector<ListNode*> Lv;
+        ListNode* search = head;
+        
+        // 存入数组
+        while(search){
+            Lv.push_back(search);
+            search = search->next;
+        }
+
+        int l = 0;
+        int r = k - 1;
+        
+        // 【修正点】：只要右边界 r 在数组范围内，就说明凑够了一组 k 个节点
+        while(r < Lv.size()) {
+            // 翻转当前区间 [l, r]
+            int temp_l = l;
+            int temp_r = r;
+            while(temp_l < temp_r){
+                swap(Lv[temp_l], Lv[temp_r]);
+                temp_l++;
+                temp_r--;
+            }
+            // 移动指针到下一组
+            l += k;
+            r += k;
+        }
+
+        // 重新连接
+        for(int i = 0; i < Lv.size() - 1; i++){
+            Lv[i]->next = Lv[i+1];
+        }
+        // 处理尾部，防止死循环
+        Lv.back()->next = nullptr; 
+
+        return Lv[0];
+    }
+};

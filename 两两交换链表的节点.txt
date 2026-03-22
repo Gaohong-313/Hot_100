@@ -1,0 +1,37 @@
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        // 1. 处理空或单节点情况
+        if(head == nullptr || head->next == nullptr)
+            return head;
+
+        vector<ListNode*> Lv;
+        ListNode* search = head; // 修正拼写错误 serch -> search
+        
+        // 2. 存入数组
+        while(search){
+            Lv.push_back(search);
+            search = search->next;
+        }
+
+        // 3. 交换数组中的指针
+        int l = 0;
+        int r = 1;
+        while(r < Lv.size()){
+            swap(Lv[l], Lv[r]);
+            l += 2;
+            r += 2;
+        }
+
+        // 4. 重新连接
+        int len = 0;
+        while(len < Lv.size() - 1){
+            Lv[len]->next = Lv[len+1];
+            len++;
+        }
+    
+        Lv.back()->next = nullptr; 
+
+        return Lv[0];
+    }
+};
