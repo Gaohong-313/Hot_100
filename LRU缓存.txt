@@ -1,0 +1,75 @@
+
+//List + unordered_map + pair对
+class LRUCache {
+private:
+    int capacity;
+    // 1. List 存数据：pair<Key, Value>
+    std::list<std::pair<int, int>> dataList;
+
+    // 2. Map 存索引：Key -> List 的迭代器
+    // 这样就能通过 Key 瞬间找到 List 中的节点位置
+    std::unordered_map<int, std::list<std::pair<int, int>>::iterator> keyToIter;
+
+public:
+    LRUCache(int capacity) {
+        this->capacity = capacity;
+    }
+
+    // 获取数据
+    int get(int key) {
+        // 第一步：查 Map
+        auto it = keyToIter.find(key);
+        if (it == keyToIter.end()) {
+            return -1; // 没找到
+        }
+
+        // 第二步：通过迭代器得到数据 (你提到的核心逻辑)
+        // it->second 是 List 的迭代器
+        // it->second->second 是 List 节点里存储的 Value
+        int value = it->second->second;
+
+        // 第三步：更新热度 (移到头部)
+        // 1. 先把旧节点从 List 中摘除
+        dataList.erase(it->second);
+        // 2. 把 {key, value} 重新放到头部
+        dataList.push_front({key, value});
+        // 3. 更新 Map 中的迭代器，指向新的头部位置
+        keyToIter[key] = dataList.begin();
+
+        return value;
+    }
+
+    // 插入或更新数据
+    void put(int key, int value) {
+        // 情况 A: Key 已经存在
+        if (keyToIter.find(key) != keyToIter.end()) {
+            // 1. 获取旧迭代器
+            auto oldIter = keyToIter[key];
+            // 2. 从 List 删除旧节点
+            dataList.erase(oldIter);
+            // 3. 新节点插到头部
+            dataList.push_front({key, value});
+            // 4. 更新 Map
+            keyToIter[key] = dataList.begin();
+            return;
+        }
+
+        // 情况 B: Key 不存在，且容量已满
+        if (dataList.size() >= capacity) {
+            // 1. 获取尾部节点 (最久未使用的数据)
+            auto lastNode = dataList.back();
+            int oldKey = lastNode.first; // 拿到 Key
+
+            // 2. 删除 List 尾部
+            dataList.pop_back();
+            // 3. 删除 Map 记录
+            keyToIter.erase(oldKey);
+        }
+
+        // 情况 C: 插入新数据
+        // 1. 插到 List 头部
+        dataList.push_front({key, value});
+        // 2. 存入 Map
+        keyToIter[key] = dataList.begin();
+    }
+};
