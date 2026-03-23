@@ -1,0 +1,16 @@
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> result;
+        middlesearch(root,result);
+        return result;
+    }
+    void middlesearch(TreeNode* node,vector<int> &result){
+        if(node == nullptr)
+        return;
+        
+        middlesearch(node->left,result);
+        result.push_back(node->val);
+        middlesearch(node->right,result);
+    }
+};

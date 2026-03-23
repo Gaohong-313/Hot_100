@@ -1,0 +1,22 @@
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        if(head == nullptr)
+        return nullptr;
+        vector<ListNode*> Lv;
+        ListNode* serch = head;
+        while(serch){
+            Lv.push_back(serch);
+            serch = serch->next;
+        }
+        sort(Lv.begin(),Lv.end(),[](const ListNode* l1,const ListNode* l2)->bool{
+            return l1->val < l2->val;
+        });
+        int n = Lv.size();
+        for(int i = 0;i < n-1;i++){
+            Lv[i]->next = Lv[i+1];
+        }
+        Lv[n-1]->next = nullptr;
+        return Lv[0];
+    }
+};

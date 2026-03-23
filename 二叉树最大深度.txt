@@ -1,0 +1,14 @@
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        int result = search(root);
+        return result;
+    }
+    int search(TreeNode* root){
+        if(root == nullptr)
+        return 0;
+        int left = search(root->left);
+        int right = search(root->right);
+        return max(left,right)+1;
+    }
+};
