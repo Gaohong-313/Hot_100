@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int max_diameter = 0; // 用于记录全局最大直径
+
+    int diameterOfBinaryTree(TreeNode* root) {
+        if (!root) return 0;
+        calculateHeight(root); // 触发递归
+        return max_diameter;
+    }
+
+    // 辅助函数：计算节点的高度，并更新最大直径
+    int calculateHeight(TreeNode* node) {
+        if (!node) return 0;
+
+        // 1. 递归获取左子树高度
+        int left_h = calculateHeight(node->left);
+        
+        // 2. 递归获取右子树高度
+        int right_h = calculateHeight(node->right);
+
+        // 3. 【关键步骤】
+        // 经过当前节点的最长路径 = 左高度 + 右高度
+        // 更新全局最大直径
+        max_diameter = max(max_diameter, left_h + right_h);
+
+        // 4. 返回当前节点的高度（供父节点使用）
+        return max(left_h, right_h) + 1;
+    }
+};
