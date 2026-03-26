@@ -1,0 +1,34 @@
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> result;
+        int count = 0;
+        if(root == nullptr){
+            return {};
+        }
+        queue<TreeNode*> qt;
+        qt.push(root);
+        count = 1;
+        while(!qt.empty()){
+            vector<int> path;
+            while(count != 0){
+
+            if(qt.front()->left != nullptr){
+                qt.push(qt.front()->left);
+            }
+            if(qt.front()->right != nullptr){
+                qt.push(qt.front()->right);
+            }
+            path.push_back(qt.front()->val);
+            qt.pop();
+            count--;
+        }
+        count = qt.size();
+        result.push_back(path);
+        }
+    return result;
+
+    }
+   
+
+};
