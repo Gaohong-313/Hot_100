@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int result = 0;
+        min_K_val(root,k,result);
+        return result;
+    }
+    void min_K_val(TreeNode* root,int& k,int& result){
+        if(root == nullptr)
+        return;
+        min_K_val(root->left,k,result);
+        --k;
+        if(k == 0){
+            result = root->val;
+        }
+        min_K_val(root->right,k,result);
+        
+    }
+};

@@ -1,0 +1,21 @@
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        vector<int> result;
+        serch(root,result);
+        for(int i = 1; i < result.size();++i){
+            if(result[i] <= result[i-1]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void serch(TreeNode* root,vector<int>& result){
+        if(root == nullptr)
+        return;
+        serch(root->left,result);
+        result.push_back(root->val);
+        serch(root->right,result);
+    }
+};
