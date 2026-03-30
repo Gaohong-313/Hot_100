@@ -1,0 +1,19 @@
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        set<ListNode*> hash;
+        ListNode* search = headA;
+        while(search != NULL){
+            hash.insert(search);
+            search = search->next;
+        }
+        search = headB;
+        while(search != NULL){
+            if(hash.find(search) != hash.end()){
+                return search;
+            }
+            search = search->next;
+        }
+        return NULL;
+    }
+};
