@@ -1,0 +1,28 @@
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        vector<TreeNode*> result;
+        // 1. 修正：确保 search 函数接收引用
+        search(root, result);
+        
+        // 2. 修正：处理空树的情况
+        if (result.size() <= 1) return;
+
+        for(int i = 0; i < result.size() - 1; ++i){
+            result[i]->right = result[i+1];
+            result[i]->left = nullptr;
+        }
+        // 处理最后一个节点
+        result[result.size() - 1]->right = nullptr;
+        result[result.size() - 1]->left = nullptr;
+    }
+
+    // 3. 修正：这里必须加 &，变成引用传递
+    void search(TreeNode* root, vector<TreeNode*>& result){
+        if(root == nullptr) return;
+        
+        result.push_back(root);
+        search(root->left, result);
+        search(root->right, result);
+    }
+};

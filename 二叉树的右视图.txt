@@ -1,0 +1,32 @@
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        int count = 0;
+        bool visited = false;
+        queue<TreeNode*> que;
+        vector<int> result;
+        if(root != nullptr)
+        que.push(root);
+        count = 1;
+        while(que.size() != 0){
+            while(count != 0){
+            if(que.front()->right != nullptr){
+                que.push(que.front()->right);
+            }
+            if(que.front()->left != nullptr){
+                que.push(que.front()->left);
+            }
+            if(visited != true){
+                result.push_back(que.front()->val);
+                visited = true;
+            }
+            que.pop();
+            count--;
+            }
+            count = que.size();
+            visited = false;
+        }
+        return result;
+    }
+
+};
