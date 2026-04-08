@@ -1,0 +1,73 @@
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        if (grid.empty() || grid[0].empty()) {
+            return 0;
+        }
+
+        int rows = grid.size();
+        int cols = grid[0].size();
+        
+        // 队列用于BFS，存储腐烂橘子的坐标 {row, col}
+        queue<pair<int, int>> q;
+        
+        // 统计新鲜橘子的数量
+        int fresh_count = 0;
+        
+        // 1. 初始化：遍历网格，找到所有初始腐烂的橘子和新鲜橘子
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < cols; ++c) {
+                if (grid[r][c] == 2) {
+                    q.push({r, c});
+                } else if (grid[r][c] == 1) {
+                    fresh_count++;
+                }
+            }
+        }
+        
+        // 如果没有新鲜橘子，直接返回0
+        if (fresh_count == 0) {
+            return 0;
+        }
+        
+        // 四个方向的偏移量：上、下、左、右
+        int dr[] = {-1, 1, 0, 0};
+        int dc[] = {0, 0, -1, 1};
+        
+        int minutes = 0;
+        
+        // 2. BFS 模拟腐烂过程
+        while (!q.empty() && fresh_count > 0) {
+            // 当前这一分钟内，队列中所有腐烂的橘子都会同时向外腐烂
+            int current_level_size = q.size();
+            
+            // 处理当前层级的所有腐烂橘子
+            for (int i = 0; i < current_level_size; ++i) {
+                auto [r, c] = q.front();
+                q.pop();
+                
+                // 检查四个相邻方向
+                for (int k = 0; k < 4; ++k) {
+                    int nr = r + dr[k];
+                    int nc = c + dc[k];
+                    
+                    // 检查边界条件和是否为新鲜橘子
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1) {
+                        // 将这个新鲜橘子腐烂
+                        grid[nr][nc] = 2;
+                        // 将其加入队列，作为下一分钟的腐烂源
+                        q.push({nr, nc});
+                        // 新鲜橘子数量减一
+                        fresh_count--;
+                    }
+                }
+            }
+            // 当前层级的所有腐烂橘子处理完毕，时间过去一分钟
+            minutes++;
+        }
+        
+        // 3. 判断结果
+        // 如果还有新鲜橘子剩下，说明无法全部腐烂
+        return (fresh_count == 0) ? minutes : -1;
+    }
+};
