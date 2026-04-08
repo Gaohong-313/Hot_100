@@ -1,0 +1,46 @@
+class Solution {
+public:
+    // 用于存储每个节点的父节点
+    unordered_map<TreeNode*, TreeNode*> parentMap;
+    
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        // 1. 预处理：遍历树，填充 parentMap
+        // 根节点的父节点是 nullptr
+        parentMap[root] = nullptr; 
+        dfs(root);
+        
+        // 2. 记录 p 的所有祖先节点
+        // 这里使用 unordered_set 比 queue 更方便，查找是 O(1)
+        unordered_set<TreeNode*> pAncestors;
+        
+        TreeNode* curr = p;
+        while (curr != nullptr) {
+            pAncestors.insert(curr);
+            curr = parentMap[curr]; // 向上找父节点
+        }
+        
+        // 3. 从 q 向上找，第一个出现在 pAncestors 中的节点就是结果
+        curr = q;
+        while (curr != nullptr) {
+            // 如果 q 的当前祖先也在 p 的祖先列表里
+            if (pAncestors.find(curr) != pAncestors.end()) {
+                return curr;
+            }
+            curr = parentMap[curr];
+        }
+        
+        return nullptr; // 理论上不会执行到这里，因为根节点肯定是公共祖先
+    }
+
+    // 深度优先搜索来构建父节点映射
+    void dfs(TreeNode* node) {
+        if (node->left) {
+            parentMap[node->left] = node;
+            dfs(node->left);
+        }
+        if (node->right) {
+            parentMap[node->right] = node;
+            dfs(node->right);
+        }
+    }
+};

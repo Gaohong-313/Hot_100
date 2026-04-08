@@ -1,0 +1,45 @@
+class Solution {
+public:
+    // 哈希表，用于存储当前路径上各个前缀和出现的次数
+    std::unordered_map<long long, int> prefix;
+
+    // 深度优先搜索函数
+    // root: 当前节点
+    // curr_sum: 从根节点到当前父节点的前缀和
+    // targetSum: 目标和
+    int dfs(TreeNode* root, long long curr_sum, int targetSum) {
+        if (!root) {
+            return 0;
+        }
+
+        int path_count = 0;
+        // 1. 更新当前前缀和（包含当前节点）
+        curr_sum += root->val;
+
+        // 2. 检查是否存在满足条件的路径
+        // 如果 (curr_sum - targetSum) 存在于哈希表中，说明找到了一些路径
+        if (prefix.count(curr_sum - targetSum)) {
+            path_count = prefix[curr_sum - targetSum];
+        }
+
+        // 3. 将当前前缀和加入哈希表，供后续子节点查询
+        prefix[curr_sum]++;
+
+        // 4. 递归遍历左右子树
+        path_count += dfs(root->left, curr_sum, targetSum);
+        path_count += dfs(root->right, curr_sum, targetSum);
+
+        // 5. 回溯：在返回前，移除当前节点对哈希表的影响
+        // 这是关键步骤，确保不同分支的路径不会互相干扰
+        prefix[curr_sum]--;
+
+        return path_count;
+    }
+
+    int pathSum(TreeNode* root, int targetSum) {
+        // 初始化：空路径的前缀和为 0，出现 1 次
+        // 这样可以正确处理从根节点开始的路径
+        prefix[0] = 1;
+        return dfs(root, 0, targetSum);
+    }
+};
