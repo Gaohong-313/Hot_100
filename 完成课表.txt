@@ -1,0 +1,61 @@
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        // 1. 构建邻接表 (Map)
+        // key: 课程号, value: 该课程的所有前置课程列表
+        unordered_map<int, vector<int>> graph;
+        for (const auto& pre : prerequisites) {
+            int course = pre[0];
+            int prerequisite = pre[1];
+            graph[course].push_back(prerequisite);
+        }
+
+        // 2. 标记数组
+        // 0: 未访问, 1: 访问中 (当前递归栈中), 2: 已完成 (已确认无环)
+        vector<int> visited(numCourses, 0);
+
+        // 3. 遍历所有课程，对未访问的课程进行DFS
+        for (int i = 0; i < numCourses; ++i) {
+            // 只有未访问的才需要检查
+            if (visited[i] == 0) {
+                if (!dfs(i, graph, visited)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+private:
+    bool dfs(int course, unordered_map<int, vector<int>>& graph, vector<int>& visited) {
+        // 情况1: 如果当前课程正在被访问（在当前的递归路径上），说明发现了环
+        if (visited[course] == 1) {
+            return false;
+        }
+        
+        // 情况2: 如果当前课程已经完成访问，说明之前检查过没问题，直接返回true
+        if (visited[course] == 2) {
+            return true;
+        }
+
+        // 情况3: 未访问，开始访问
+        // 先标记为“访问中”
+        visited[course] = 1;
+
+        // 遍历该课程的所有前置课程
+        if (graph.find(course) != graph.end()) {
+            for (int preCourse : graph[course]) {
+                // 递归检查前置课程
+                if (!dfs(preCourse, graph, visited)) {
+                    return false; // 如果前置课程有环，当前课程也有环
+                }
+            }
+        }
+
+        // 所有前置课程都检查完了，没有发现环
+        // 标记为“已完成”
+        visited[course] = 2;
+        
+        return true;
+    }
+};
