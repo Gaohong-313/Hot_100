@@ -1,0 +1,64 @@
+class Trie {
+private:
+    // 定义 Trie 树的节点
+    struct TrieNode {
+        vector<TrieNode*> children; // 子节点数组 (对应 a-z)
+        bool isEnd;                 // 标记是否是某个单词的结尾
+        
+        TrieNode() : children(26, nullptr), isEnd(false) {}
+    };
+
+    TrieNode* root; // 根节点
+
+    // 辅助函数：查找节点
+    TrieNode* searchPrefix(string prefix) {
+        TrieNode* node = root;
+        for (char ch : prefix) {
+            int idx = ch - 'a';
+            if (node->children[idx] == nullptr) {
+                return nullptr; // 路径不存在
+            }
+            node = node->children[idx];
+        }
+        return node;
+    }
+
+public:
+    Trie() {
+        root = new TrieNode();
+    }
+    
+    // 插入单词
+    void insert(string word) {
+        TrieNode* node = root;
+        for (char ch : word) {
+            int idx = ch - 'a';
+            if (node->children[idx] == nullptr) {
+                node->children[idx] = new TrieNode();
+            }
+            node = node->children[idx];
+        }
+        node->isEnd = true; // 标记单词结束
+    }
+    
+    // 搜索完整单词
+    bool search(string word) {
+        TrieNode* node = searchPrefix(word);
+        // 不仅路径要存在，而且必须标记为单词结尾
+        return node != nullptr && node->isEnd;
+    }
+    
+    // 搜索前缀
+    bool startsWith(string prefix) {
+        // 只要路径存在即可
+        return searchPrefix(prefix) != nullptr;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */
