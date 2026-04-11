@@ -1,0 +1,46 @@
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<int> path; // 用于存储当前正在构建的排列路径
+        // 标记数组，记录 nums 中的每个元素是否已经被放入 path 中
+        vector<bool> visited(nums.size(), false);
+        vector<vector<int>> result; // 存储所有最终生成的全排列结果
+        
+        // 调用回溯函数
+        versal(path, nums, visited, result);
+        return result;
+    }
+
+    // 回溯核心函数
+    // path: 当前已选择的路径
+    // nums: 原始数组
+    // visited: 标记哪些元素已使用
+    // result: 结果集
+    void versal(vector<int>& path, vector<int>& nums, vector<bool>& visited, vector<vector<int>>& result) {
+        // 终止条件：如果当前路径长度等于原数组长度，说明找到了一个完整的排列
+        if (path.size() == nums.size()) {
+            result.push_back(path); // 将当前路径加入结果集
+            return; // 结束当前层递归，开始回溯
+        }
+
+        // 遍历数组中的每一个元素，尝试将其加入路径
+        for (int i = 0; i < nums.size(); ++i) {
+            // 剪枝：如果当前元素已经被使用过，则跳过
+            if (visited[i] == true)
+                continue;
+            
+            // --- 做出选择 ---
+            path.push_back(nums[i]);   // 将当前元素加入路径
+            visited[i] = true;         // 标记该元素已被使用
+            
+            // --- 递归进入下一层 ---
+            versal(path, nums, visited, result);
+            
+            // --- 撤销选择 (回溯) ---
+            // 当递归返回时，说明以当前路径为基础的所有排列都已生成
+            // 需要恢复状态，以便尝试下一个可能的选择
+            path.pop_back();    // 将刚才加入的元素移除
+            visited[i] = false; // 将该元素的标记恢复为未使用
+        }
+    }
+};
