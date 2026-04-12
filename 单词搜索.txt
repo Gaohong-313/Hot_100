@@ -1,0 +1,66 @@
+class Solution {
+public:
+    // 四个方向的偏移量：上、下、左、右
+    int dx[4] = {-1, 1, 0, 0};
+    int dy[4] = {0, 0, -1, 1};
+
+    bool exist(vector<vector<char>>& board, string word) {
+        if (board.empty() || board[0].empty() || word.empty()) {
+            return false;
+        }
+        
+        int rows = board.size();
+        int cols = board[0].size();
+
+        // 1. 遍历每个单元格，将其作为单词的起点
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                // 如果从 (i, j) 开始能找到单词，则返回 true
+                if (dfs(board, word, i, j, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+private:
+    // DFS 递归函数
+    // (i, j) 是当前在 board 中的位置
+    // k 是当前需要匹配的 word 中的字符索引
+    bool dfs(vector<vector<char>>& board, string& word, int i, int j, int k) {
+        // 2. 基准情况：如果 k 等于 word 长度，说明所有字符都已匹配
+        if (k == word.length()) {
+            return true;
+        }
+
+        int rows = board.size();
+        int cols = board[0].size();
+
+        // 3. 剪枝：检查边界、字符是否匹配
+        if (i < 0 || i >= rows || j < 0 || j >= cols || board[i][j] != word[k]) {
+            return false;
+        }
+
+        // 4. 标记当前位置为已访问
+        // 技巧：用一个不会出现在题目中的字符（如 '#'）来标记
+        char temp = board[i][j];
+        board[i][j] = '#'; 
+
+        // 5. 向四个方向探索下一个字符
+        for (int d = 0; d < 4; ++d) {
+            int ni = i + dx[d];
+            int nj = j + dy[d];
+            // 递归调用，寻找 word 的下一个字符 (k+1)
+            if (dfs(board, word, ni, nj, k + 1)) {
+                // 回溯：在返回 true 之前，恢复现场
+                board[i][j] = temp; 
+                return true;
+            }
+        }
+
+        // 6. 回溯：如果所有方向都失败，恢复当前位置的字符，返回 false
+        board[i][j] = temp;
+        return false;
+    }
+};
