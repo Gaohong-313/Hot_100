@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int left = 0;
+        int right = nums.size() - 1; // 定义 target 在左闭右闭的区间里 [left, right]
+
+        // 当 left <= right 时，区间 [left, right] 依然有效
+        while (left <= right) {
+            // 防止 (left + right) 溢出的写法
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] >= target) {
+                // 目标值在左区间，或者是 mid 本身
+                // 我们尝试向左收缩，看看有没有更小的索引满足条件
+                right = mid - 1;
+            } else {
+                // 目标值严格大于 mid，所以在右区间
+                left = mid + 1;
+            }
+        }
+        
+        // 循环结束时，left 指向第一个 >= target 的位置
+        // 这也是 target 应该插入的位置
+        return left;
+    }
+};
