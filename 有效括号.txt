@@ -1,0 +1,36 @@
+class Solution {
+public:
+    bool isValid(string s) {
+        // 1. 处理空字符串
+        if (s.empty()) return true;
+        
+        stack<char> st;
+        
+        // 2. 遍历字符串的每一个字符
+        for (char c : s) {
+            // 如果是左括号，直接入栈
+            if (c == '(' || c == '[' || c == '{') {
+                st.push(c);
+            } 
+            // 如果是右括号，进行匹配检查
+            else {
+                // 如果栈为空，说明没有对应的左括号，直接返回 false
+                if (st.empty()) return false;
+                
+                char top = st.top();
+                st.pop(); // 匹配成功，弹出栈顶元素
+                
+                // 检查是否匹配
+                if ((c == ')' && top != '(') || 
+                    (c == ']' && top != '[') || 
+                    (c == '}' && top != '{')) {
+                    return false;
+                }
+            }
+        }
+        
+        // 3. 最后检查栈是否为空
+        // 如果为空，说明所有括号都匹配完了；如果不为空，说明有未闭合的左括号
+        return st.empty();
+    }
+};
