@@ -1,0 +1,41 @@
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size();
+        int n = nums2.size();
+        int total_len = m + n;
+        
+        // 两个指针，分别指向 nums1 和 nums2 的当前位置
+        int i = 0, j = 0;
+        
+        // 我们需要找到中间位置的数
+        // 如果是奇数，我们需要第 (total_len / 2 + 1) 个数
+        // 如果是偶数，我们需要第 (total_len / 2) 和 (total_len / 2 + 1) 个数
+        int left_val = 0;  // 记录中间左边的值（偶数时用）
+        int right_val = 0; // 记录中间右边的值（奇数或偶数时都用）
+        
+        // 我们只需要遍历到中间位置即可
+        // 循环次数：total_len / 2 + 1
+        for (int k = 0; k <= total_len / 2; ++k) {
+            left_val = right_val; // 更新左边的值
+            
+            // 核心逻辑：比较两个指针指向的值，取较小的那个
+            if (i < m && (j >= n || nums1[i] < nums2[j])) {
+                right_val = nums1[i];
+                i++;
+            } else {
+                right_val = nums2[j];
+                j++;
+            }
+        }
+        
+        // 判断奇偶性
+        if (total_len % 2 == 1) {
+            // 奇数：直接返回中间那个数
+            return right_val;
+        } else {
+            // 偶数：返回中间两个数的平均值
+            return (left_val + right_val) / 2.0;
+        }
+    }
+};
