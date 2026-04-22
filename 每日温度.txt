@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        int n = temperatures.size();
+        // 1. 初始化结果数组，全部填 0。
+        // 这样如果某天后面没有更高温度，它默认就是 0，不用额外处理。
+        vector<int> result(n, 0);
+        
+        // 2. 使用栈来存储索引。栈里的索引对应的温度是单调递减的。
+        stack<int> st;
+
+        for (int i = 0; i < n; ++i) {
+            // 3. 当前温度 temperatures[i] 如果比栈顶索引对应的温度高
+            // 说明我们找到了栈顶那天的“下一个更高温度”
+            while (!st.empty() && temperatures[st.top()] < temperatures[i]) {
+                int prev_index = st.top(); // 拿到之前的某一天
+                st.pop();                  // 这一天已经有答案了，弹出
+                result[prev_index] = i - prev_index; // 计算天数差，填入结果数组
+            }
+            // 4. 把当前日子的索引入栈，等待未来的某一天来“解决”它
+            st.push(i);
+        }
+
+        return result;
+    }
+};
