@@ -1,0 +1,38 @@
+#include <iostream>
+#include <stack>
+#include <algorithm> // 用于 std::min
+#include <climits>   // 用于 INT_MAX
+
+using namespace std;
+
+class MinStack {
+private:
+    stack<int> data_stack; // 数据栈
+    stack<int> min_stack;  // 辅助栈，存最小值
+
+public:
+    MinStack() {
+        // 初始化时压入一个极大值，防止第一次比较时辅助栈为空
+        min_stack.push(INT_MAX);
+    }
+    
+    void push(int val) {
+        data_stack.push(val);
+        // 辅助栈压入：当前值 与 历史最小值 中的较小者
+        min_stack.push(min(val, min_stack.top()));
+    }
+    
+    void pop() {
+        // 两个栈同步弹出
+        data_stack.pop();
+        min_stack.pop();
+    }
+    
+    int top() {
+        return data_stack.top();
+    }
+    
+    int getMin() {
+        return min_stack.top();
+    }
+};
