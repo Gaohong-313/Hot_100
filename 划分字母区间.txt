@@ -1,0 +1,27 @@
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+        // 1. 预处理：记录每个字母最后一次出现的下标
+        int last[26] = {0};
+        for (int i = 0; i < s.size(); i++) {
+            last[s[i] - 'a'] = i;
+        }
+
+        vector<int> result;
+        int start = 0; // 当前区间的起始位置
+        int end = 0;   // 当前区间的结束位置
+
+        // 2. 贪心遍历
+        for (int i = 0; i < s.size(); i++) {
+            // 更新当前区间的右边界（取最大值，保证包含所有当前区间字母的最后一次出现）
+            end = max(end, last[s[i] - 'a']);
+
+            // 如果当前下标到达了右边界，说明可以切分出一个区间
+            if (i == end) {
+                result.push_back(end - start + 1); // 记录区间长度
+                start = i + 1; // 更新下一个区间的起始位置
+            }
+        }
+        return result;
+    }
+};
