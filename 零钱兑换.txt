@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        // 1. 初始化 dp 数组，初始值设为 amount + 1（一个绝对达不到的极大值）
+        // 因为就算全用面额 1 的硬币，最多也只需要 amount 枚，所以 amount + 1 相当于“无穷大”
+        vector<int> dp(amount + 1, amount + 1);
+        
+        // 2. 边界条件：凑成金额 0 需要 0 枚硬币
+        dp[0] = 0;
+
+        // 3. 外层遍历金额（从 1 到 amount）
+        for (int i = 1; i <= amount; i++) {
+            // 4. 内层遍历每一种硬币
+            for (int j = 0; j < coins.size(); j++) {
+                // 只有当当前金额大于等于硬币面额时，才能使用该硬币
+                if (i >= coins[j]) {
+                    // 状态转移：取“不使用当前硬币”和“使用当前硬币”中的较小值
+                    dp[i] = min(dp[i], dp[i - coins[j]] + 1);
+                }
+            }
+        }
+
+        // 5. 如果 dp[amount] 依然是初始的极大值，说明无法凑出，返回 -1
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};
