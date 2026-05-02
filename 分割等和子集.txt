@@ -1,0 +1,26 @@
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        
+        // 1. 如果总和是奇数，绝对不可能分割成两个相等的子集
+        if (sum % 2 == 1) return false;
+        
+        int target = sum / 2;
+        
+        // dp[j] 表示：容量为 j 的背包，最多能装下的数字和是多少
+        vector<int> dp(target + 1, 0);
+
+        // 2. 遍历物品（数组中的每一个数字）
+        for (int i = 0; i < nums.size(); i++) {
+            // 3. 遍历背包容量（0-1背包必须倒序遍历，防止物品被重复放入）
+            for (int j = target; j >= nums[i]; j--) {
+                // 状态转移：取“不放当前数字”和“放当前数字”中的较大值
+                dp[j] = max(dp[j], dp[j - nums[i]] + nums[i]);
+            }
+        }
+
+        // 4. 如果容量为 target 的背包恰好被装满（最大和等于 target），说明可以分割
+        return dp[target] == target;
+    }
+};
