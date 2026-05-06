@@ -1,0 +1,19 @@
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int maxReach = 0; // 当前能跳到的最远位置
+        int n = nums.size();
+        
+        for (int i = 0; i < n; i++) {
+            // 如果当前下标已经超过了最远能到达的位置，说明跳不过去了
+            if (i > maxReach) return false;
+            
+            // 更新最远能到达的位置：取 当前最远值 和 (当前位置+当前位置能跳的距离) 的最大值
+            maxReach = max(maxReach, i + nums[i]);
+            
+            // 提前剪枝：如果最远位置已经能覆盖到最后一个下标，直接返回 true
+            if (maxReach >= n - 1) return true;
+        }
+        return true;
+    }
+};

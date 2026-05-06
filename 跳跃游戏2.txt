@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        int end = 0;      // 当前这一步能跳到的最远边界
+        int maxPos = 0;   // 下一步能跳到的最远位置
+        int steps = 0;    // 记录跳跃步数
+
+        // 注意：只需要遍历到 n - 2，因为到达最后一个位置就不需要再跳了
+        for (int i = 0; i < n - 1; i++) {
+            // 更新下一步能跳到的最远位置
+            maxPos = max(maxPos, i + nums[i]);
+            
+            // 如果到达了当前这一步的边界，必须再跳一步
+            if (i == end) {
+                end = maxPos; // 更新边界为下一步能跳到的最远位置
+                steps++;      // 步数加一
+            }
+        }
+        return steps;
+    }
+};
