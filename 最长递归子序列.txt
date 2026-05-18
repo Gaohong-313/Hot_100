@@ -1,0 +1,31 @@
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int lengthOfLIS(std::vector<int>& nums) {
+        if (nums.empty()) return 0;
+        
+        int n = nums.size();
+        // 初始化 dp 数组，每个元素至少可以单独成为一个长度为 1 的子序列
+        std::vector<int> dp(n, 1);
+        
+        int maxLength = 1; // 记录全局最长递增子序列的长度
+        
+        // 从第 1 个元素开始遍历（第 0 个元素默认长度为 1）
+        for (int i = 1; i < n; ++i) {
+            // 回头看前面的所有元素，寻找可以接龙的机会
+            for (int j = 0; j < i; ++j) {
+                // 如果前面的元素比当前元素小，就可以接在后面
+                if (nums[i] > nums[j]) {
+                    // 状态转移：择优录取，看接在哪个 j 后面能更长
+                    dp[i] = std::max(dp[i], dp[j] + 1);
+                }
+            }
+            // 每次算完一个 dp[i]，就更新一下全局最大值
+            maxLength = std::max(maxLength, dp[i]);
+        }
+        
+        return maxLength;
+    }
+};
