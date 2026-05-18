@@ -1,0 +1,46 @@
+#include <queue>
+#include <vector>
+
+class MedianFinder {
+private:
+    // 大顶堆：存放较小的一半（C++默认是大顶堆）
+    std::priority_queue<int> maxHeap; 
+    // 小顶堆：存放较大的一半
+    std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap; 
+
+public:
+    MedianFinder() {}
+
+    void addNum(int num) {
+        // 1. 决定放入哪个堆
+        if (maxHeap.empty() || num <= maxHeap.top()) {
+            maxHeap.push(num);
+        } else {
+            minHeap.push(num);
+        }
+
+        // 2. 平衡两个堆的大小（保证大小差不超过1）
+        // 如果大顶堆比小顶堆多2个，把大顶堆堆顶挪给小顶堆
+        if (maxHeap.size() > minHeap.size() + 1) {
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+        } 
+        // 如果小顶堆比大顶堆多，把小顶堆堆顶挪给大顶堆
+        // (这里我们约定奇数时让大顶堆多一个，所以小顶堆只要比大顶堆大就要挪)
+        else if (minHeap.size() > maxHeap.size()) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+    }
+
+    double findMedian() {
+        // 如果大顶堆元素多（总数为奇数），中位数就是大顶堆堆顶
+        if (maxHeap.size() > minHeap.size()) {
+            return maxHeap.top();
+        } 
+        // 如果两个堆一样大（总数为偶数），中位数是两堆顶的平均值
+        else {
+            return (maxHeap.top() + minHeap.top()) / 2.0;
+        }
+    }
+};
