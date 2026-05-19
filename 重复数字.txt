@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int n = nums.size() - 1; // 数组长度是 n+1，数字范围是 1 到 n
+        int res = 0;
+        
+        // 遍历二进制的每一位（常规整数范围 31 位足够覆盖）
+        for (int i = 0; i < 31; ++i) {
+            int x = 0; // 统计 nums 数组中第 i 位为 1 的个数
+            int y = 0; // 统计范围 [1, n] 中第 i 位为 1 的个数
+            
+            // 统计 nums 中第 i 位 1 的个数
+            for (int num : nums) {
+                if ((num >> i) & 1) {
+                    x++;
+                }
+            }
+            
+            // 统计标准范围 [1, n] 中第 i 位 1 的个数
+            for (int j = 1; j <= n; ++j) {
+                if ((j >> i) & 1) {
+                    y++;
+                }
+            }
+            
+            // 如果 nums 里的 1 比标准范围里的 1 多，说明重复数的这一位是 1
+            if (x > y) {
+                // 使用按位或运算，将 res 的第 i 位置为 1
+                res |= (1 << i);
+            }
+        }
+        
+        return res;
+    }
+};
+
+
