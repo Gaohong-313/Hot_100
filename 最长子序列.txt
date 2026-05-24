@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+        
+        // 极客技巧：加空格哨兵，让有效字符下标从 1 开始
+        text1 = " " + text1;
+        text2 = " " + text2;
+        
+        // 开辟 DP 数组并初始化为 0
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+        
+        // 遍历所有状态
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (text1[i] == text2[j]) {
+                    // 字符相等：取左上角的值 + 1
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    // 字符不等：取上方和左方的最大值
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+};
