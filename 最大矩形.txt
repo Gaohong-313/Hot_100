@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) return 0;
+        
+        int m = matrix.size(), n = matrix[0].size();
+        // 1. 预处理：计算每个位置向左连续 '1' 的个数
+        vector<vector<int>> width(m, vector<int>(n, 0));
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (matrix[i][j] == '1') {
+                    width[i][j] = (j == 0) ? 1 : width[i][j - 1] + 1;
+                } else {
+                    width[i][j] = 0;
+                }
+            }
+        }
+        
+        int result = 0;
+        // 2. 遍历每一个为 '1' 的位置作为左上角
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (matrix[i][j] == '0') continue;
+                
+                int minWidth = width[i][j]; // 初始化最小宽度
+                // 3. 从当前行开始向下扩展
+                for (int k = i; k < m && matrix[k][j] == '1'; ++k) {
+                    int height = k - i + 1;
+                    minWidth = min(minWidth, width[k][j]); // 取向下扩展过程中的最小宽度
+                    result = max(result, height * minWidth); // 更新最大面积
+                }
+            }
+        }
+        return result;
+    }
+};
