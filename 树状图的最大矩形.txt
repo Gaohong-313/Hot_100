@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        // 关键技巧：在数组末尾加个0作为哨兵，确保所有柱子都能被弹出并计算
+        heights.push_back(0); 
+        stack<int> st;
+        st.push(-1); // 栈底放入-1作为左边界的哨兵
+        int ans = 0;
+        
+        for (int i = 0; i < heights.size(); ++i) {
+            // 当前柱子比栈顶矮，开始结算栈顶柱子的最大面积
+            while (st.top() != -1 && heights[st.top()] > heights[i]) {
+                int h = heights[st.top()]; st.pop(); // 取出最矮的柱子高度
+                int w = i - st.top() - 1; // 右边界(i) - 左边界(当前栈顶) - 1
+                ans = max(ans, h * w);
+            }
+            st.push(i);
+        }
+        return ans;
+    }
+};
