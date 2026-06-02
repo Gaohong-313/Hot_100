@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int n = nums.size();
+        if (n <= 2) return n; // 长度小于等于2，直接返回原长度
+        
+        int slow = 2; // 慢指针，表示当前可写入的位置
+        for (int fast = 2; fast < n; ++fast) {
+            // 如果当前元素不等于已处理数组倒数第二个元素，则保留
+            if (nums[fast] != nums[slow - 2]) {
+                nums[slow] = nums[fast];
+                slow++;
+            }
+        }
+        return slow; // slow 最终的值即为新数组的长度
+    }
+};
