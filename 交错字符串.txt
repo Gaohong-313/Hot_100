@@ -1,0 +1,36 @@
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int n1 = s1.size(), n2 = s2.size(), n3 = s3.size();
+        // 前提条件：s3的长度必须等于s1和s2长度之和
+        if (n1 + n2 != n3) return false;
+
+        // dp[i][j] 表示 s1的前i个字符 和 s2的前j个字符 能否交错组成 s3的前i+j个字符
+        vector<vector<bool>> dp(n1 + 1, vector<bool>(n2 + 1, false));
+        
+        // 初始化：两个空字符串可以组成一个空字符串
+        dp[0][0] = true;
+
+        // 初始化第一列：s2为空，s3完全由s1组成
+        for (int i = 1; i <= n1; ++i) {
+            dp[i][0] = dp[i - 1][0] && (s1[i - 1] == s3[i - 1]);
+        }
+
+        // 初始化第一行：s1为空，s3完全由s2组成
+        for (int j = 1; j <= n2; ++j) {
+            dp[0][j] = dp[0][j - 1] && (s2[j - 1] == s3[j - 1]);
+        }
+
+        // 填充DP表格
+        for (int i = 1; i <= n1; ++i) {
+            for (int j = 1; j <= n2; ++j) {
+                // 当前s3需要匹配的字符索引为 i+j-1
+                bool from_s1 = dp[i - 1][j] && (s1[i - 1] == s3[i + j - 1]);
+                bool from_s2 = dp[i][j - 1] && (s2[j - 1] == s3[i + j - 1]);
+                dp[i][j] = from_s1 || from_s2;
+            }
+        }
+
+        return dp[n1][n2];
+    }
+};
