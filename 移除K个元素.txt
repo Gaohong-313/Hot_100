@@ -1,0 +1,36 @@
+class Solution {
+public:
+    string removeKdigits(string num, int k) {
+        // 使用 vector 模拟栈，方便后续直接拼接和截取字符串
+        vector<char> stk; 
+        
+        // 1. 遍历每一个字符，利用贪心策略维护单调递增栈
+        for (char c : num) {
+            // 当还有删除次数(k>0)，且栈不为空，且当前数字比栈顶元素小时
+            // 弹出栈顶元素（相当于移除了左边较大的数字）
+            while (k > 0 && !stk.empty() && stk.back() > c) {
+                stk.pop_back();
+                k--;
+            }
+            stk.push_back(c);
+        }
+        
+        // 2. 如果遍历完 k 还有剩余，说明栈内已经是单调递增的，直接从末尾删除即可
+        while (k > 0) {
+            stk.pop_back();
+            k--;
+        }
+        
+        // 3. 构建结果字符串并去除前导零
+        string result = "";
+        bool leadingZero = true;
+        for (char c : stk) {
+            if (leadingZero && c == '0') continue; // 跳过前导零
+            leadingZero = false;
+            result += c;
+        }
+        
+        // 4. 如果所有数字都被删完或全是0，返回 "0"
+        return result.empty() ? "0" : result;
+    }
+};
