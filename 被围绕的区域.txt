@@ -1,0 +1,53 @@
+class Solution {
+private:
+    int m, n; // 记录矩阵的行数和列数
+    // 方向数组：表示上下左右四个方向的偏移量
+    int dx[4] = {1, -1, 0, 0}; 
+    int dy[4] = {0, 0, 1, -1}; 
+
+    void dfs(vector<vector<char>>& board, int x, int y) {
+        // 边界检查：越界、或者当前字符不是 'O'，直接返回
+        if (x < 0 || x >= m || y < 0 || y >= n || board[x][y] != 'O') {
+            return;
+        }
+        
+        // 将当前 'O' 标记为临时字符 '*' (也可以是 '#' 或 'A')，防止重复搜索
+        board[x][y] = '*'; 
+        
+        // 向四个方向进行深度优先搜索
+        for (int i = 0; i < 4; ++i) {
+            dfs(board, x + dx[i], y + dy[i]);
+        }
+    }
+
+public:
+    void solve(vector<vector<char>>& board) {
+        if (board.empty() || board[0].empty()) return;
+        
+        m = board.size();
+        n = board[0].size();
+        
+        // 1. 遍历左右两条边界（第0列和第n-1列）
+        for (int i = 0; i < m; ++i) {
+            if (board[i][0] == 'O') dfs(board, i, 0);
+            if (board[i][n - 1] == 'O') dfs(board, i, n - 1);
+        }
+        
+        // 2. 遍历上下两条边界（第0行和第m-1行）
+        for (int j = 0; j < n; ++j) {
+            if (board[0][j] == 'O') dfs(board, 0, j);
+            if (board[m - 1][j] == 'O') dfs(board, m - 1, j);
+        }
+        
+        // 3. 全表扫描，根据标记进行翻转和还原
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (board[i][j] == 'O') {
+                    board[i][j] = 'X';     // 未被标记的 'O' 说明被完全包围，翻转为 'X'
+                } else if (board[i][j] == '*') {
+                    board[i][j] = 'O';     // 被标记为 '*' 的说明与边界连通，还原为 'O'
+                }
+            }
+        }
+    }
+};
