@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        unordered_map<int, int> countMap;
+        
+        // 1. 遍历数组，统计元素出现次数
+        for (int num : nums) {
+            countMap[num]++;
+            
+            // 2. 如果计数满3，直接删除该元素（消除法）
+            if (countMap[num] == 3) {
+                countMap.erase(num);
+            }
+        }
+        
+        // 3. 遍历结束后，哈希表中剩下的唯一键就是结果
+        return countMap.begin()->first;
+    }
+};
