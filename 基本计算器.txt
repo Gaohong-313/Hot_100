@@ -1,0 +1,49 @@
+class Solution {
+public:
+    int calculate(string s) {
+        stack<int> stk;
+        int num = 0;          // 用于记录当前正在读取的数字
+        char preSign = '+';   // 记录上一个运算符，初始化为 '+' 处理第一个数字
+        
+        for (int i = 0; i < s.size(); ++i) {
+            char c = s[i];
+            
+            // 1. 如果是数字，累加拼凑完整的数字
+            if (isdigit(c)) {
+                num = num * 10 + (c - '0');
+            }
+            
+            // 2. 如果遇到运算符，或者已经遍历到了字符串末尾
+            // 说明当前数字已经读取完毕，需要根据【上一个运算符】进行处理
+            if (!isdigit(c) && c != ' ' || i == s.size() - 1) {
+                switch (preSign) {
+                    case '+':
+                        stk.push(num);
+                        break;
+                    case '-':
+                        stk.push(-num);
+                        break;
+                    case '*':
+                        // 乘除法优先级高，直接弹出栈顶元素计算后重新压栈
+                        stk.top() *= num;
+                        break;
+                    case '/':
+                        stk.top() /= num;
+                        break;
+                }
+                
+                // 更新上一个运算符，并重置当前数字为 0
+                preSign = c;
+                num = 0;
+            }
+        }
+        
+        // 3. 此时栈中所有的元素都是需要进行加法运算的数字，直接求和即可
+        int res = 0;
+        while (!stk.empty()) {
+            res += stk.top();
+            stk.pop();
+        }
+        return res;
+    }
+};
