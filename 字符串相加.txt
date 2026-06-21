@@ -1,0 +1,33 @@
+class Solution {
+public:
+    string addStrings(string num1, string num2) {
+        string res;
+        int carry = 0; // 记录进位
+        int i = num1.size() - 1, j = num2.size() - 1; // 双指针指向末尾
+        
+        // 只要还有数字没处理完，或者还有进位，就继续循环
+        while (i >= 0 || j >= 0 || carry > 0) {
+            int sum = carry; // 先把进位加上
+            
+            // 如果 num1 还有剩余数字，加上并移动指针
+            if (i >= 0) {
+                sum += num1[i] - '0';
+                i--;
+            }
+            
+            // 如果 num2 还有剩余数字，加上并移动指针
+            if (j >= 0) {
+                sum += num2[j] - '0';
+                j--;
+            }
+            
+            // 计算当前位的结果和新的进位
+            res.push_back(sum % 10 + '0'); // 将数字转为字符并加入结果
+            carry = sum / 10;              // 更新进位
+        }
+        
+        // 因为是从低位到高位计算的，所以最后需要反转字符串
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
