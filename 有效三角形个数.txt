@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int triangleNumber(vector<int>& nums) {
+        int n = nums.size();
+        if (n < 3) return 0;
+        
+        sort(nums.begin(), nums.end()); // 1. 升序排序
+        int ans = 0;
+        
+        // 2. 从后往前遍历，固定最大边 c
+        for (int i = n - 1; i >= 2; --i) {
+            int left = 0, right = i - 1; // 3. 初始化双指针
+            
+            // 4. 双指针向中间逼近
+            while (left < right) {
+                if (nums[left] + nums[right] > nums[i]) {
+                    // 满足条件：left 到 right-1 都可以与 right 组成三角形
+                    ans += right - left; 
+                    right--; // 缩小右边界，继续寻找
+                } else {
+                    // 不满足条件：当前最小边太小，左指针右移
+                    left++; 
+                }
+            }
+        }
+        return ans;
+    }
+};
